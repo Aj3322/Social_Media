@@ -1,5 +1,4 @@
 import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:insta/models/users.dart';
@@ -19,6 +18,7 @@ class AddPostScreen extends StatefulWidget {
 class _AddPostScreenState extends State<AddPostScreen> {
 Uint8List? _file;
 bool isLoading=false;
+var userData = {};
 
 final TextEditingController _discriptionControler = TextEditingController();
 
@@ -70,6 +70,8 @@ final TextEditingController _discriptionControler = TextEditingController();
       String uid,
       String profileImage,
       ) async {
+
+    if(_file!=null){
     setState(() {
       isLoading=true;
     });
@@ -95,9 +97,17 @@ final TextEditingController _discriptionControler = TextEditingController();
       });
       showSnakBar(err.toString(), context);
      }
+     Navigator.of(context).pop();
+    }
+
+
   }
 
   void clearImage(){
+
+        if(_file==null){
+          Navigator.of(context).pop();
+        }
     setState(() {
       _file=null;
     });
@@ -112,29 +122,33 @@ final TextEditingController _discriptionControler = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    final Users users = Provider.of<UserProvider>(context).getUser;
-    return _file==null? Center(
-      child: IconButton(
-        onPressed: () => _selectImage(context) ,
-        icon: const Icon(Icons.upload , size: 54,color: textColor,),
-      ),
-    ): Scaffold(
+
+    final Users user = Provider.of<UserProvider>(context).getUser;
+
+    return  Scaffold(
       appBar: AppBar(
         backgroundColor: mobileBackgroundColor,
+        elevation: 0,
+        leadingWidth: 20,
         leading: IconButton(
           onPressed: clearImage,
-          icon: const Icon(Icons.arrow_back_sharp,color: Colors.black,),
+          icon: const Icon(Icons.arrow_back_sharp,color: primaryColor,),
         ),
         title: const Text('Post to',style: TextStyle(fontSize: 30,fontWeight: FontWeight.bold,color: Color(0xFF836F71),),),
         centerTitle: false,
         actions: [
           TextButton(
-            onPressed: () => postImage(users.username, users.uid, users.photoUrl),
+            onPressed: () => postImage( user.username, user.uid,user.photoUrl),
             child: const Text('Post', style: TextStyle(color: Colors.blueAccent, fontWeight: FontWeight.bold,fontSize: 16,),),
           ),
         ],
       ),
-    body: Column(
+    body: _file==null? Center(
+      child: IconButton(
+        onPressed: () => _selectImage(context) ,
+        icon: const Icon(Icons.upload , size: 54,color: headerColor,),
+      ),
+    ):Column(
       children: [
         isLoading? const  LinearProgressIndicator(): const Padding(padding: EdgeInsets.only(top: 0),),const Divider(),
         Row(
@@ -143,7 +157,7 @@ final TextEditingController _discriptionControler = TextEditingController();
           children: [
             CircleAvatar(
               backgroundImage: NetworkImage(
-                  users.photoUrl
+                  user.photoUrl
               ),
             ),
             SizedBox(
@@ -153,6 +167,7 @@ final TextEditingController _discriptionControler = TextEditingController();
                 controller: _discriptionControler,
                 decoration: const InputDecoration(
                   hintText: 'Write a caption',
+                  hintStyle: TextStyle(color: primaryColor),
                   border: InputBorder.none,
                 ),
                 maxLines: 8,

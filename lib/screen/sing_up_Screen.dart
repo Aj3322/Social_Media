@@ -2,7 +2,6 @@ import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:insta/resources/auth_method.dart';
 import 'package:insta/responsive/mobileScreenLayout.dart';
@@ -143,7 +142,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                     color: blueColor,
                   ),
-                  child: isLoading? const Center(child: CircularProgressIndicator(color: Colors.white,),) : const Text("Log in"),
+                  child: isLoading? const Center(child: CircularProgressIndicator(color: Colors.white,),) : const Text("Sign Up"),
 
                 ),
               ),

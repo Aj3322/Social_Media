@@ -1,16 +1,18 @@
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_notification_channel/flutter_notification_channel.dart';
+import 'package:flutter_notification_channel/notification_importance.dart';
 import 'package:insta/providers/users_provider.dart';
 import 'package:insta/responsive/mobileScreenLayout.dart';
 import 'package:insta/responsive/responsive_layout_screen.dart';
 import 'package:insta/responsive/webScreenLayout.dart';
 import 'package:insta/screen/logIn_screen.dart';
-import 'package:insta/screen/sing_up_Screen.dart';
 import 'package:insta/utils/colors.dart';
 import 'package:provider/provider.dart';
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   if(kIsWeb){
@@ -28,12 +30,13 @@ void main() async {
   }else{
     await Firebase.initializeApp();
   }
- 
+  _channel();
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
 
   // This widget is the root of your application.
   @override
@@ -56,13 +59,13 @@ class MyApp extends StatelessWidget {
               if(snapshot.hasData){
                 return const ResponsiveLayout(mobileScreenLayout: mobileScreenLayout(),webScreenLayout: webScreenLayout(),);
               }else if(snapshot.hasError){
-              return Center(child: Text('${snapshot.error}'),);
+                return Center(child: Text('${snapshot.error}'),);
 
-            }
+              }
             }else if(snapshot.connectionState==ConnectionState.waiting){
               return const Center(child: CircularProgressIndicator(color: primaryColor,),);
             }
-              return const LoginScreen();
+            return const LoginScreen();
 
           },
         ),
@@ -70,3 +73,13 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+_channel()async{
+  var result = await FlutterNotificationChannel.registerNotificationChannel(
+      description: 'For Showing Message Notification',
+      id: 'chats',
+      importance: NotificationImportance.IMPORTANCE_HIGH,
+      name: 'Chats');
+  log('\nNotification Channel Result: $result');
+}
+

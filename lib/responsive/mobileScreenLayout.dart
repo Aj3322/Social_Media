@@ -1,14 +1,11 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:insta/models/users.dart';
-import 'package:insta/providers/users_provider.dart';
+import 'package:insta/resources/auth_method.dart';
 import 'package:insta/screen/sing_up_Screen.dart';
 import 'package:insta/utils/colors.dart';
 import 'package:insta/utils/globleVariable.dart';
-import 'package:provider/provider.dart';
 class mobileScreenLayout extends StatefulWidget {
   const mobileScreenLayout({Key? key}) : super(key: key);
 
@@ -16,23 +13,37 @@ class mobileScreenLayout extends StatefulWidget {
   State<mobileScreenLayout> createState() => _mobileScreenLayoutState();
 }
 
-class _mobileScreenLayoutState extends State<mobileScreenLayout> {
+class _mobileScreenLayoutState extends State<mobileScreenLayout>with WidgetsBindingObserver  {
 
   void navigateToSignUp(){
     Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const SignUpScreen()));
   }
   int _page=0;
   late PageController _pageController;
+  bool isProfile=false;
+
+  String? changes;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _pageController = PageController();
+    AuthMethods().getSelfInfo();
+    AuthMethods.getFirebaseMessagingToken();
+    WidgetsBinding.instance!.addObserver(this);
+    AuthMethods().updateActiveStatus(true);
+  }
 
-    //  bottom bar:
-     //SystemChrome.setEnabledSystemUIMode (SystemUiMode.immersive, overlays: []);
-     //SystemUiOverlay.top
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+
+    if (state == AppLifecycleState.resumed){
+      AuthMethods().updateActiveStatus(true);
+    }else{
+      AuthMethods().updateActiveStatus(false);
+    }
   }
 
   @override
@@ -50,9 +61,19 @@ void onPageChanged(int page){
  setState(() {
    _page=page;
  });
+ profile();
 }
-
-
+profile(){
+    if(_page==4){
+     setState(() {
+       isProfile=true;
+     });
+    }else{
+      setState(() {
+        isProfile=false;
+      });
+    }
+}
 
 
   @override
@@ -64,24 +85,26 @@ void onPageChanged(int page){
         onPageChanged: onPageChanged,
         children: homeScreenItem,
       ),
-      bottomNavigationBar: ClipRRect(
-        borderRadius: const BorderRadius.only(topRight: Radius.circular(40),topLeft: Radius.circular(40)),
-        child: SizedBox(
-          height: 70,
-          child: CupertinoTabBar(
-            backgroundColor: const Color(0xff3E2F4C),
-            items: [
-              BottomNavigationBarItem(icon: Icon(Icons.home,color: _page==0? primaryColor : secondaryColor,), label: '', backgroundColor: primaryColor,),
-              BottomNavigationBarItem(icon: Icon(Icons.search,color: _page==1? primaryColor : secondaryColor), label:'' , backgroundColor: primaryColor),
-              BottomNavigationBarItem(icon: Icon(Icons.add_circle ,color: _page==2? primaryColor : secondaryColor), label: '', backgroundColor: primaryColor),
-              BottomNavigationBarItem(icon: Icon(Icons.favorite ,color: _page==3? primaryColor : secondaryColor), label: '', backgroundColor: primaryColor),
-              BottomNavigationBarItem(icon: Icon(Icons.person,color: _page==4? primaryColor : secondaryColor), label: '', backgroundColor: primaryColor),
-
-            ],
-            onTap: navigationTapped,
+      bottomNavigationBar:isProfile?null: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: ClipRRect(
+          borderRadius: const BorderRadius.all(Radius.circular(30)),
+          child: SizedBox(
+            height: 60,
+            child: CupertinoTabBar(
+              backgroundColor: const Color(0xff3E2F4C),
+              items: [
+                BottomNavigationBarItem(icon: Icon(Icons.home,color: _page==0? primaryColor : secondaryColor,), label: '', backgroundColor: primaryColor,),
+                BottomNavigationBarItem(icon: Icon(Icons.search,color: _page==1? primaryColor : secondaryColor), label:'' , backgroundColor: primaryColor),
+                BottomNavigationBarItem(icon: Icon(Icons.favorite ,color: _page==2? primaryColor : secondaryColor), label: '', backgroundColor: primaryColor),
+                BottomNavigationBarItem(icon: Icon(Icons.person,color: _page==5? primaryColor : secondaryColor), label: '', backgroundColor: primaryColor,),
+              ],
+              onTap: navigationTapped,
+            ),
           ),
         ),
       ),
     );
   }
 }
+

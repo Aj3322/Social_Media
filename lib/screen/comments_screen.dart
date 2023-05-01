@@ -6,7 +6,6 @@ import 'package:insta/resources/firestore_method.dart';
 import 'package:insta/utils/colors.dart';
 import 'package:insta/utils/utils.dart';
 import 'package:insta/widgets/comments_card.dart';
-import 'package:insta/widgets/input_text_field.dart';
 import 'package:provider/provider.dart';
 class CommentsScreen extends StatefulWidget {
   final postId;
@@ -50,6 +49,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(icon: const Icon(Icons.arrow_back_ios,color: headerColor,),onPressed: () => Navigator.of(context).pop(),),
         backgroundColor: mobileBackgroundColor,
         title: const Text('Comments' ,style: TextStyle(fontSize: 30,fontWeight: FontWeight.bold,color: Color(0xFF836F71)),),
         titleSpacing: 30,

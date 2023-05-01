@@ -1,13 +1,13 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:insta/resources/auth_method.dart';
 import 'package:insta/responsive/mobileScreenLayout.dart';
 import 'package:insta/responsive/responsive_layout_screen.dart';
 import 'package:insta/responsive/webScreenLayout.dart';
 import 'package:insta/screen/sing_up_Screen.dart';
 import 'package:insta/utils/colors.dart';
+import 'package:insta/utils/globleVariable.dart';
 import 'package:insta/utils/utils.dart';
 import 'package:insta/widgets/input_text_field.dart';
 class LoginScreen extends StatefulWidget {
@@ -61,7 +61,8 @@ void navigateToSignUp(){
     return  Scaffold(
       body:SafeArea(
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 32),
+          padding: MediaQuery.of(context).size.width > webScreenSize?EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width/3):
+          const EdgeInsets.symmetric(horizontal: 32),
           width: double.infinity,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -115,7 +116,7 @@ void navigateToSignUp(){
 
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: const Text("Sing up" , style: TextStyle(fontWeight: FontWeight.bold,color: Colors.black),),
+                      child: const Text("Sign up" , style: TextStyle(fontWeight: FontWeight.bold,color: Colors.black),),
 
                     ),
                   )

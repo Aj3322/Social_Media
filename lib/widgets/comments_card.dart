@@ -1,10 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:insta/models/users.dart';
-import 'package:insta/providers/users_provider.dart';
 import 'package:insta/utils/colors.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 class CommentCard extends StatelessWidget {
   final snap;
   const CommentCard({Key? key, required this.snap}) : super(key: key);
